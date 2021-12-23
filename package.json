@@ -1,11 +1,20 @@
 {
+  "private": "true",
   "name": "resor",
   "version": "1.0.0",
   "description": "",
-  "main": "/src/app.js",
+  "main": "src/index.js",
+  "files": [
+    "!**.test.js",
+    "src/**"
+  ],
   "scripts": {
     "lint": "xo",
-    "lint:fix": "xo --fix"
+    "lint:fix": "xo --fix",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "start": "noode .",
+    "start:watch": "nodemon ."
   },
   "repository": {
     "type": "git",
@@ -20,11 +29,19 @@
   "dependencies": {
     "body-parser": "^1.19.1",
     "express": "^4.17.2",
+    "joi": "^17.5.0",
     "mongoose": "^6.1.2"
   },
   "devDependencies": {
     "eslint-config-airbnb-base": "^15.0.0",
+    "jest": "^27.4.5",
+    "nodemon": "^2.0.15",
+    "supertest": "^6.1.6",
     "xo": "^0.47.0"
+  },
+  "jest": {
+    "collectCoverage": true,
+    "testEnvironment": "node"
   },
   "xo": {
     "envs": [
@@ -34,6 +51,16 @@
     "extends": [
       "eslint-config-airbnb-base"
     ],
+    "globals": [
+      "afterAll",
+      "afterEach",
+      "beforeAll",
+      "beforeEach",
+      "describe",
+      "expect",
+      "it",
+      "jest"
+    ],
     "parserOptions": {
       "ecmaVersion": "2021"
     },
@@ -42,11 +69,13 @@
     "rules": {
       "indent": "off",
       "no-console": "off",
+      "global-require": "off",
+      "max-classes-per-file": "off",
       "unicorn/prefer-module": "off",
       "unicorn/prevent-abbreviations": "off",
       "unicorn/prefer-object-from-entries": "off",
       "unicorn/prefer-optional-catch-binding": "off",
       "unicorn/prefer-ternary": "off"
-    }    
+    }
   }
 }

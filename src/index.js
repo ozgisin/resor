@@ -1,4 +1,3 @@
-const express = require('express');
 const mongoose = require('mongoose');
 const config = require('./config');
 
@@ -13,12 +12,15 @@ db.once('open', () => {
   console.log('Connected successfully');
 });
 
-const app = express();
+function start() {
+  const Models = require('./models')(mongoose);
+  const app = require('./servers/http')(Models);
 
-app.get('/', (request, res) => {
-  res.send('Hello Resor');
-});
+  app.listen(config.httPort, () => {
+    console.log(`Server is running at port ${config.httPort}`);
+  });
+}
 
-app.listen(config.httPort, () => {
-  console.log('Server is running at port 3000');
-});
+if (require.main === module) {
+  start();
+}
