@@ -12,15 +12,18 @@ db.once('open', () => {
   console.log('Connected successfully');
 });
 
-function start() {
-  const Models = require('./models')(mongoose);
-  const app = require('./servers/http')(Models, config);
+const Models = require('./models')(mongoose);
+const app = require('./servers/http')(Models, config);
 
+if (require.main === module) {
   app.listen(config.httPort, () => {
     console.log(`Server is running at port ${config.httPort}`);
   });
 }
 
-if (require.main === module) {
-  start();
-}
+module.exports = {
+  Models,
+  config,
+  db,
+  app,
+};

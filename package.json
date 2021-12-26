@@ -13,6 +13,8 @@
     "lint:fix": "xo --fix",
     "test": "jest",
     "test:watch": "jest --watch",
+    "test:integration": "set NODE_ENV=test&& jest --detectOpenHandles --runInBand --coverage false --testRegex=\\.integration-test\\.js$",
+    "test:integration:watch": "set NODE_ENV=test&& jest --watch --runInBand --coverage false --testRegex=\\.integration-test\\.js$",
     "start": "noode .",
     "start:watch": "nodemon ."
   },
@@ -75,11 +77,15 @@
       "global-require": "off",
       "max-classes-per-file": "off",
       "no-underscore-dangle": "off",
+      "no-await-in-loop": "off",
+      "no-restricted-syntax": "off",
       "unicorn/prefer-module": "off",
       "unicorn/prevent-abbreviations": "off",
       "unicorn/prefer-object-from-entries": "off",
       "unicorn/prefer-optional-catch-binding": "off",
-      "unicorn/prefer-ternary": "off"
+      "unicorn/prefer-ternary": "off",
+      "unicorn/filename-case": "off",
+      "import/no-extraneous-dependencies": "off"
     }
   }
 }

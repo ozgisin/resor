@@ -472,7 +472,7 @@ describe('AuthenticationController', () => {
         };
         bcrypt = {
           compare: jest.fn().mockResolvedValue(false),
-        }
+        };
 
         authController = new AuthenticationController({User}, {bcrypt});
       });
