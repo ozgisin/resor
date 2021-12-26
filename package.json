@@ -27,10 +27,13 @@
   },
   "homepage": "https://github.com/ozgisin/resor#readme",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.1",
     "express": "^4.17.2",
     "joi": "^17.5.0",
-    "mongoose": "^6.1.2"
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.1.2",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "eslint-config-airbnb-base": "^15.0.0",
@@ -71,6 +74,7 @@
       "no-console": "off",
       "global-require": "off",
       "max-classes-per-file": "off",
+      "no-underscore-dangle": "off",
       "unicorn/prefer-module": "off",
       "unicorn/prevent-abbreviations": "off",
       "unicorn/prefer-object-from-entries": "off",

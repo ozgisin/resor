@@ -8,7 +8,7 @@ class CategoryController {
       body: {title},
     } = req;
 
-    const category = new this.Category({title, archivedAt: null});
+    const category = new this.Category({title});
 
     try {
       await category.save();

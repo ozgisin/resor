@@ -14,7 +14,7 @@ db.once('open', () => {
 
 function start() {
   const Models = require('./models')(mongoose);
-  const app = require('./servers/http')(Models);
+  const app = require('./servers/http')(Models, config);
 
   app.listen(config.httPort, () => {
     console.log(`Server is running at port ${config.httPort}`);
