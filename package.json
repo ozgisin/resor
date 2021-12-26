@@ -14,8 +14,8 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:integration": "set NODE_ENV=test&& jest --detectOpenHandles --runInBand --coverage false --testRegex=\\.integration-test\\.js$",
-    "test:integration:watch": "set NODE_ENV=test&& jest --watch --runInBand --coverage false --testRegex=\\.integration-test\\.js$",
-    "start": "noode .",
+    "test:integration:watch": "set NODE_ENV=test&& jest --detectOpenHandles --watch --runInBand --coverage false --testRegex=\\.integration-test\\.js$",
+    "start": "node .",
     "start:watch": "nodemon ."
   },
   "repository": {
