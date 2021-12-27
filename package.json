@@ -85,6 +85,8 @@
       "unicorn/prefer-optional-catch-binding": "off",
       "unicorn/prefer-ternary": "off",
       "unicorn/filename-case": "off",
+      "unicorn/no-array-callback-reference": "off",
+      "unicorn/no-array-method-this-argument": "off",
       "import/no-extraneous-dependencies": "off"
     }
   }

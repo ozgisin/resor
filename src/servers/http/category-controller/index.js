@@ -1,3 +1,5 @@
+const {NotFoundError} = require('../errors');
+
 class CategoryController {
   constructor({Category, Product}) {
     this.Category = Category;
@@ -7,16 +9,17 @@ class CategoryController {
   async findOne(req, res) {
     const {
       params: {categoryId},
-      user,
     } = req;
-
-    console.log('user->', user);
 
     const category = await this.Category.findById(categoryId).populate({
       path: 'products',
       model: this.Product,
-      select: '_id title description',
+      // select: '_id title description',
     });
+
+    if (!category) {
+      throw new NotFoundError();
+    }
 
     res.status(200).json(category);
   }
