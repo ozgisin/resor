@@ -1,3 +1,4 @@
+const status = require('http-status');
 const {AuthenticationError} = require('../errors');
 
 class AuthenticationController {
@@ -42,7 +43,7 @@ class AuthenticationController {
 
     user.token = token;
 
-    return res.status(201).json({
+    return res.status(status.CREATED).json({
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
@@ -72,7 +73,7 @@ class AuthenticationController {
 
       user.token = token;
 
-      return res.status(200).json({
+      return res.status(status.OK).json({
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,

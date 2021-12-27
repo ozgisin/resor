@@ -9,16 +9,15 @@ module.exports = ({Schema}) => {
       imageUrl: {
         type: String,
       },
+      description: {
+        type: String,
+      },
       foods: [
         {
           type: Schema.Types.ObjectId,
           ref: 'Food',
         },
       ],
-      archivedAt: {
-        type: Date,
-        index: true,
-      },
     },
     {
       timestamps: true,

@@ -14,7 +14,7 @@ module.exports = ({Schema}) => {
       ingredients: [
         {
           type: String,
-        }
+        },
       ],
       price: {
         type: Number,
@@ -33,10 +33,6 @@ module.exports = ({Schema}) => {
         type: Schema.Types.ObjectId,
         ref: 'Category',
         required: true,
-        index: true,
-      },
-      archivedAt: {
-        type: Date,
         index: true,
       },
     },

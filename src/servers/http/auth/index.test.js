@@ -1,3 +1,4 @@
+const status = require('http-status');
 const AuthenticationController = require('.');
 const {AuthenticationError} = require('../errors');
 const {ROLES} = require('../../../constants');
@@ -124,7 +125,7 @@ describe('AuthenticationController', () => {
       });
 
       it('retuns correct response', () => {
-        expect(res.status).toHaveBeenCalledWith(201);
+        expect(res.status).toHaveBeenCalledWith(status.CREATED);
         expect(mockResponse.json).toHaveBeenCalledWith({
           firstName: user.firstName,
           lastName: user.lastName,
@@ -416,7 +417,7 @@ describe('AuthenticationController', () => {
       });
 
       it('retuns correct response', () => {
-        expect(res.status).toHaveBeenCalledWith(200);
+        expect(res.status).toHaveBeenCalledWith(status.OK);
         expect(mockResponse.json).toHaveBeenCalledWith({
           firstName: user.firstName,
           lastName: user.lastName,

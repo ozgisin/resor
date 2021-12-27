@@ -1,4 +1,5 @@
 const supertest = require('supertest');
+const status = require('http-status');
 const bcrypt = require('bcryptjs');
 const {Models, config, db} = require('../../..');
 require('../../../test-setup')(db);
@@ -27,7 +28,7 @@ describe('Integration AuthenticationController', () => {
             headers: {
               'content-type': 'application/problem+json; charset=utf-8',
             },
-            status: 400,
+            status: status.BAD_REQUEST,
             body: {
               message: 'Bad request',
               name: 'ValidationError',
@@ -53,7 +54,7 @@ describe('Integration AuthenticationController', () => {
 
       it('returns correct status and body', () => {
         expect(response).toMatchObject({
-          status: 201,
+          status: status.CREATED,
           body: {
             firstName: 'Kerim',
             lastName: 'Özgiray',
@@ -89,7 +90,7 @@ describe('Integration AuthenticationController', () => {
           headers: {
             'content-type': 'application/problem+json; charset=utf-8',
           },
-          status: 401,
+          status: status.UNAUTHORIZED,
           body: {
             message: 'User already exists. Please Login',
             name: 'AuthenticationError',
@@ -119,7 +120,7 @@ describe('Integration AuthenticationController', () => {
             headers: {
               'content-type': 'application/problem+json; charset=utf-8',
             },
-            status: 400,
+            status: status.BAD_REQUEST,
             body: {
               message: 'Bad request',
               name: 'ValidationError',
@@ -146,7 +147,7 @@ describe('Integration AuthenticationController', () => {
           headers: {
             'content-type': 'application/problem+json; charset=utf-8',
           },
-          status: 401,
+          status: status.UNAUTHORIZED,
           body: {
             message: 'Invalid credentials',
             name: 'AuthenticationError',
@@ -178,7 +179,7 @@ describe('Integration AuthenticationController', () => {
 
       it('returns correct status and body', () => {
         expect(response).toMatchObject({
-          status: 200,
+          status: status.OK,
           body: {
             firstName: 'Kerim',
             lastName: 'Özgiray',

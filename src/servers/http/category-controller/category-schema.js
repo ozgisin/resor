@@ -8,4 +8,20 @@ const CategoryParamSchema = Joi.object()
   .label('parameters')
   .required();
 
-module.exports = {CategoryParamSchema};
+const CategoryCreateSchema = Joi.array()
+  .items(
+    Joi.object()
+      .keys({
+        title: Joi.string().max(50).required(),
+        imageUrl: Joi.string().uri().optional(),
+        description: Joi.string().max(255).optional(),
+      })
+      .required(),
+  )
+  .label('payload')
+  .required();
+
+module.exports = {
+  CategoryParamSchema,
+  CategoryCreateSchema,
+};

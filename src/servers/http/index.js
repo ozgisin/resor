@@ -1,17 +1,20 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-// const {ROLES} = require('../../constants');
+const {ROLES} = require('../../constants');
 
 const {
   requestHandler,
   errorHandler,
   requestValidator,
-  // authorize,
+  authorize,
 } = require('./middleware');
 const CategoryController = require('./category-controller');
 const AuthController = require('./auth');
-const {CategoryParamSchema} = require('./category-controller/category-schema');
+const {
+  CategoryParamSchema,
+  CategoryCreateSchema,
+} = require('./category-controller/category-schema');
 const {RegisterSchema, LoginSchema} = require('./auth/auth-schema');
 
 const createApp = () => {
@@ -40,11 +43,23 @@ module.exports = (Models, config) => {
 
   const categoryController = new CategoryController(Models);
   app.get('/api/categories', requestHandler(categoryController, 'findAll'));
-
   app.get(
     '/api/categories/:categoryId',
     requestValidator(CategoryParamSchema, 'params'),
     requestHandler(categoryController, 'findOne'),
+  );
+  app.post(
+    '/api/categories',
+    authorize(ROLES.ADMIN),
+    requestValidator(CategoryCreateSchema, 'body'),
+    requestHandler(categoryController, 'create'),
+  );
+
+  app.delete(
+    '/api/categories/:categoryId',
+    authorize(ROLES.ADMIN),
+    requestValidator(CategoryParamSchema, 'params'),
+    requestHandler(categoryController, 'delete'),
   );
 
   app.use(errorHandler);
