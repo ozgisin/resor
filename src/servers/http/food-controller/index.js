@@ -2,8 +2,9 @@ const status = require('http-status');
 const {NotFoundError} = require('../errors');
 
 class FoodController {
-  constructor({Food}) {
+  constructor({Food, Category}) {
     this.Food = Food;
+    this.Category = Category;
   }
 
   async findOne(req, res) {
@@ -18,6 +19,41 @@ class FoodController {
     }
 
     res.status(status.OK).json(food);
+  }
+
+  async find(req, res) {
+    const {
+      params: {categoryId},
+    } = req;
+    const foods = await this.Food.find({categoryId});
+    res.status(status.OK).json(foods);
+  }
+
+  async create(req, res) {
+    const {
+      params: {categoryId},
+      body,
+    } = req;
+
+    const category = await this.Category.findById(categoryId);
+    if (!category) {
+      throw new NotFoundError();
+    }
+    const foods = await category.addFoods(body);
+    res.status(status.CREATED).json(foods);
+  }
+
+  async delete(req, res) {
+    const {
+      params: {categoryId, foodId},
+    } = req;
+
+    const category = await this.Category.findById(categoryId);
+    if (!category) {
+      throw new NotFoundError();
+    }
+    await category.removeFood(foodId);
+    res.status(status.NO_CONTENT).json();
   }
 }
 

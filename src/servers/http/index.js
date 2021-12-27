@@ -9,13 +9,19 @@ const {
   requestValidator,
   authorize,
 } = require('./middleware');
-const CategoryController = require('./category-controller');
 const AuthController = require('./auth');
+const CategoryController = require('./category-controller');
+const FoodController = require('./food-controller');
 const {
   CategoryParamSchema,
   CategoryCreateSchema,
 } = require('./category-controller/category-schema');
 const {RegisterSchema, LoginSchema} = require('./auth/auth-schema');
+const {
+  FoodFindParamSchema,
+  FoodParamSchema,
+  FoodCreateSchema,
+} = require('./food-controller/food-schema');
 
 const createApp = () => {
   const app = express();
@@ -60,6 +66,31 @@ module.exports = (Models, config) => {
     authorize(ROLES.ADMIN),
     requestValidator(CategoryParamSchema, 'params'),
     requestHandler(categoryController, 'delete'),
+  );
+
+  const foodController = new FoodController(Models);
+  app.get(
+    '/api/categories/:categoryId/foods/:foodId',
+    requestValidator(FoodParamSchema, 'params'),
+    requestHandler(foodController, 'findOne'),
+  );
+  app.get(
+    '/api/categories/:categoryId/foods',
+    requestValidator(FoodFindParamSchema, 'params'),
+    requestHandler(foodController, 'find'),
+  );
+  app.post(
+    '/api/categories/:categoryId/foods',
+    authorize(ROLES.ADMIN),
+    requestValidator(FoodFindParamSchema, 'params'),
+    requestValidator(FoodCreateSchema, 'body'),
+    requestHandler(foodController, 'create'),
+  );
+  app.delete(
+    '/api/categories/:categoryId/foods/:foodId',
+    authorize(ROLES.ADMIN),
+    requestValidator(FoodParamSchema, 'params'),
+    requestHandler(foodController, 'delete'),
   );
 
   app.use(errorHandler);

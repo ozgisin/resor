@@ -185,9 +185,9 @@ describe('CategoryController', () => {
       });
 
       it('rejects', async () => {
-        await expect(
-          categoryController.Category.find(req, res),
-        ).rejects.toThrow(error);
+        await expect(categoryController.findAll(req, res)).rejects.toThrow(
+          error,
+        );
       });
     });
   });
