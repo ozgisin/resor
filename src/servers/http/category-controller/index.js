@@ -1,21 +1,26 @@
 class CategoryController {
-  constructor({Category}) {
+  constructor({Category, Product}) {
     this.Category = Category;
+    this.Product = Product;
   }
 
-  async create(req, res) {
+  async findOne(req, res) {
     const {
-      body: {title},
+      params: {categoryId},
     } = req;
 
-    const category = new this.Category({title});
+    const category = await this.Category.findById(categoryId).populate({
+      path: 'products',
+      model: this.Product,
+      select: '_id title description',
+    });
 
-    try {
-      await category.save();
-      res.send(category);
-    } catch (error) {
-      res.status(500).send(error);
-    }
+    res.status(200).json(category);
+  }
+
+  async findAll(req, res) {
+    const categories = await this.Category.find({});
+    res.status(200).json(categories);
   }
 }
 

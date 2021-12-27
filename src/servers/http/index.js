@@ -6,7 +6,7 @@ const {
   requestHandler,
   errorHandler,
   requestValidator,
-  auth,
+  // auth,
 } = require('./middleware');
 const CategoryController = require('./category-controller');
 const AuthController = require('./auth');
@@ -38,11 +38,12 @@ module.exports = (Models, config) => {
   );
 
   const categoryController = new CategoryController(Models);
-  app.post(
-    '/api/categories',
-    auth,
-    requestValidator(CategorySchema, 'body'),
-    requestHandler(categoryController, 'create'),
+  app.get('/api/categories', requestHandler(categoryController, 'findAll'));
+
+  app.get(
+    '/api/categories/:categoryId',
+    requestValidator(CategorySchema, 'params'),
+    requestHandler(categoryController, 'findOne'),
   );
 
   app.use(errorHandler);

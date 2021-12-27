@@ -1,10 +1,11 @@
 const Joi = require('joi');
+Joi.objectId = require('joi-objectid')(Joi);
 
 const CategorySchema = Joi.object()
   .keys({
-    title: Joi.string().max(255).required(),
+    categoryId: Joi.objectId().required(),
   })
-  .label('payload')
+  .label('parameters')
   .required();
 
 module.exports = {CategorySchema};
