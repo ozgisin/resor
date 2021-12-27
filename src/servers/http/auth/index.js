@@ -31,11 +31,11 @@ class AuthenticationController {
 
     const token = await this.jwt.sign(
       {
-        userId: user._id,
-        email,
+        role: user.role,
       },
       this.config.token.secret,
       {
+        subject: user._id.toString(),
         expiresIn: this.config.token.expiration,
       },
     );
@@ -61,11 +61,11 @@ class AuthenticationController {
     if (user && (await this.bcrypt.compare(password, user.password))) {
       const token = await this.jwt.sign(
         {
-          userId: user._id,
-          email,
+          role: user.role,
         },
         this.config.token.secret,
         {
+          subject: user._id.toString(),
           expiresIn: this.config.token.expiration,
         },
       );

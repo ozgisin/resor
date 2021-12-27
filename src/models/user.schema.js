@@ -1,3 +1,5 @@
+const {ROLES} = require('../constants');
+
 module.exports = ({Schema}) => {
   const userSchema = new Schema(
     {
@@ -18,6 +20,12 @@ module.exports = ({Schema}) => {
       },
       token: {
         type: String,
+      },
+      role: {
+        type: String,
+        required: true,
+        default: ROLES.USER,
+        enum: [ROLES.ADMIN, ROLES.USER],
       },
     },
     {

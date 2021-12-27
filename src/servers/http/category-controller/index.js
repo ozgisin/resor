@@ -7,7 +7,10 @@ class CategoryController {
   async findOne(req, res) {
     const {
       params: {categoryId},
+      user,
     } = req;
+
+    console.log('user->', user);
 
     const category = await this.Category.findById(categoryId).populate({
       path: 'products',

@@ -20,7 +20,7 @@ module.exports = ({Schema}) => {
         type: Number,
       },
       imageUrl: {
-          type: String,
+        type: String,
       },
       categoryId: {
         type: Schema.Types.ObjectId,

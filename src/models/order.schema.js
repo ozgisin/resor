@@ -1,12 +1,18 @@
+const {ORDER_STATUS} = require('../constants');
+
 module.exports = ({Schema}) => {
   return new Schema(
     {
       status: {
         type: String,
         required: true,
-        default: 'pending',
+        default: ORDER_STATUS.PENDING,
         index: true,
-        enum: ['pending', 'fulfilled', 'canceled'],
+        enum: [
+          ORDER_STATUS.PENDING,
+          ORDER_STATUS.FULFILLED,
+          ORDER_STATUS.CANCELED,
+        ],
       },
       userId: {
         type: Schema.Types.ObjectId,
@@ -28,7 +34,7 @@ module.exports = ({Schema}) => {
         },
       ],
       totalPrice: {
-          type: Number,
+        type: Number,
       },
     },
     {

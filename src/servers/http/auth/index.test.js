@@ -1,5 +1,6 @@
 const AuthenticationController = require('.');
 const {AuthenticationError} = require('../errors');
+const {ROLES} = require('../../../constants');
 
 describe('AuthenticationController', () => {
   let User;
@@ -54,6 +55,7 @@ describe('AuthenticationController', () => {
           firstName: 'test-name',
           lastName: 'test-surname',
           email: 'test@email.com',
+          role: ROLES.USER,
           createdAt: new Date(1000),
           updatedAt: new Date(1000),
         };
@@ -111,11 +113,11 @@ describe('AuthenticationController', () => {
       it('calls jwt.sign with correct params', () => {
         expect(authController.jwt.sign).toHaveBeenCalledWith(
           {
-            userId: user._id,
-            email: user.email,
+            role: user.role,
           },
           config.token.secret,
           {
+            subject: user._id,
             expiresIn: config.token.expiration,
           },
         );
@@ -309,6 +311,7 @@ describe('AuthenticationController', () => {
           firstName: 'test-name',
           lastName: 'test-surname',
           email: 'test@email.com',
+          role: ROLES.USER,
           createdAt: new Date(1000),
           updatedAt: new Date(1000),
         };
@@ -359,6 +362,7 @@ describe('AuthenticationController', () => {
           lastName: 'test-surname',
           email: 'test@email.com',
           password: 'password',
+          role: ROLES.USER,
           createdAt: new Date(1000),
           updatedAt: new Date(1000),
         };
@@ -401,11 +405,11 @@ describe('AuthenticationController', () => {
       it('calls jwt.sign with correct params', () => {
         expect(authController.jwt.sign).toHaveBeenCalledWith(
           {
-            userId: user._id,
-            email: user.email,
+            role: user.role,
           },
           config.token.secret,
           {
+            subject: user._id,
             expiresIn: config.token.expiration,
           },
         );

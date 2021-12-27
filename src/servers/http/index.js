@@ -1,12 +1,13 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { ROLES } = require('../../constants');
 
 const {
   requestHandler,
   errorHandler,
   requestValidator,
-  // auth,
+  authorize,
 } = require('./middleware');
 const CategoryController = require('./category-controller');
 const AuthController = require('./auth');
