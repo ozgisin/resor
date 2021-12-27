@@ -3,18 +3,16 @@ const {NotFoundError} = require('../errors');
 
 describe('CategoryController', () => {
   let Category;
-  let Product;
+  let Food;
   let mockResponse;
   let res;
 
   beforeEach(() => {
     Category = {
       find: jest.fn(),
-      findById: jest.fn(() => {
-        jest.fn();
-      }),
+      findOne: jest.fn(),
     };
-    Product = {};
+    Food = {};
     mockResponse = {json: jest.fn()};
     res = {status: jest.fn().mockReturnValue(mockResponse)};
   });
@@ -23,12 +21,12 @@ describe('CategoryController', () => {
     let categoryController;
 
     beforeEach(() => {
-      categoryController = new CategoryController({Category, Product});
+      categoryController = new CategoryController({Category, Food});
     });
 
     it('initialized the class members', () => {
       expect(categoryController.Category).toBe(Category);
-      expect(categoryController.Product).toBe(Product);
+      expect(categoryController.Food).toBe(Food);
     });
   });
 
@@ -42,7 +40,7 @@ describe('CategoryController', () => {
 
     describe('when everything is successful', () => {
       let category;
-      let product;
+      let food;
       let mockResult;
 
       beforeEach(async () => {
@@ -51,33 +49,35 @@ describe('CategoryController', () => {
             categoryId: 'test-category-id',
           },
         };
-        product = {
-          _id: 'test-product-id',
-          title: 'Test Product',
+        food = {
+          _id: 'test-food-id',
+          title: 'Test Food',
         };
         category = {
           _id: 'test-category-id',
           title: 'Test Category',
-          products: [product],
+          foods: [food],
         };
         mockResult = {populate: jest.fn().mockResolvedValue(category)};
-        Category = {findById: jest.fn().mockReturnValue(mockResult)};
+        Category = {findOne: jest.fn().mockReturnValue(mockResult)};
 
-        categoryController = new CategoryController({Category, Product});
+        categoryController = new CategoryController({Category, Food});
 
         await categoryController.findOne(req, res);
       });
 
-      it('calls Category.findById with correct params', () => {
-        expect(categoryController.Category.findById).toHaveBeenCalledWith(
-          'test-category-id',
-        );
+      it('calls Category.findOne with correct params', () => {
+        expect(categoryController.Category.findOne).toHaveBeenCalledWith({
+          _id: 'test-category-id',
+          archivedAt: null,
+        });
       });
 
-      it('calls Category.findById().populate with correct params', () => {
+      it('calls Category.findOne().populate with correct params', () => {
         expect(mockResult.populate).toHaveBeenCalledWith({
-          path: 'products',
-          model: Product,
+          path: 'foods',
+          model: Food,
+          select: '_id title imageUrl price',
         });
       });
 
@@ -100,9 +100,9 @@ describe('CategoryController', () => {
         };
         /** Important ! */
         mockResult = {populate: jest.fn().mockResolvedValue(null)};
-        Category = {findById: jest.fn().mockReturnValue(mockResult)};
+        Category = {findOne: jest.fn().mockReturnValue(mockResult)};
 
-        categoryController = new CategoryController({Category, Product});
+        categoryController = new CategoryController({Category, Food});
       });
 
       it('throws NotFoundError', async () => {
@@ -112,7 +112,7 @@ describe('CategoryController', () => {
       });
     });
 
-    describe('when Category.findById fails', () => {
+    describe('when Category.findOne fails', () => {
       let mockResult;
       let error;
 
@@ -125,9 +125,9 @@ describe('CategoryController', () => {
         };
         /** Important ! */
         mockResult = {populate: jest.fn().mockRejectedValue(error)};
-        Category = {findById: jest.fn().mockReturnValue(mockResult)};
+        Category = {findOne: jest.fn().mockReturnValue(mockResult)};
 
-        categoryController = new CategoryController({Category, Product});
+        categoryController = new CategoryController({Category, Food});
       });
 
       it('rejects', async () => {
@@ -154,10 +154,10 @@ describe('CategoryController', () => {
         category = {
           _id: 'test-category-id',
           title: 'Test Category',
-          products: [],
+          foods: [],
         };
         Category = {find: jest.fn().mockResolvedValue([category])};
-        categoryController = new CategoryController({Category, Product});
+        categoryController = new CategoryController({Category, Food});
 
         await categoryController.findAll(req, res);
       });
@@ -179,7 +179,7 @@ describe('CategoryController', () => {
         error = new Error('Test Error');
         req = {};
         Category = {find: jest.fn().mockRejectedValue(error)};
-        categoryController = new CategoryController({Category, Product});
+        categoryController = new CategoryController({Category, Food});
       });
 
       it('rejects', async () => {

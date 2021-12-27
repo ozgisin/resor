@@ -1,9 +1,9 @@
 const {NotFoundError} = require('../errors');
 
 class CategoryController {
-  constructor({Category, Product}) {
+  constructor({Category, Food}) {
     this.Category = Category;
-    this.Product = Product;
+    this.Food = Food;
   }
 
   async findOne(req, res) {
@@ -11,10 +11,13 @@ class CategoryController {
       params: {categoryId},
     } = req;
 
-    const category = await this.Category.findById(categoryId).populate({
-      path: 'products',
-      model: this.Product,
-      // select: '_id title description',
+    const category = await this.Category.findOne({
+      _id: categoryId,
+      archivedAt: null,
+    }).populate({
+      path: 'foods',
+      model: this.Food,
+      select: '_id title imageUrl price',
     });
 
     if (!category) {

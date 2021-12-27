@@ -7,8 +7,15 @@ module.exports = ({Schema}) => {
       },
       description: {
         type: String,
-        required: true,
       },
+      about: {
+        type: String,
+      },
+      ingredients: [
+        {
+          type: String,
+        }
+      ],
       price: {
         type: Number,
         required: true,

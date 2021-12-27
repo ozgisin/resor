@@ -22,9 +22,9 @@ module.exports = ({Schema}) => {
       },
       items: [
         {
-          product: {
+          food: {
             type: Schema.Types.ObjectId,
-            ref: 'Product',
+            ref: 'Food',
             required: true,
           },
           quantity: {

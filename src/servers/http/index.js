@@ -11,7 +11,7 @@ const {
 } = require('./middleware');
 const CategoryController = require('./category-controller');
 const AuthController = require('./auth');
-const {CategorySchema} = require('./category-controller/category-schema');
+const {CategoryParamSchema} = require('./category-controller/category-schema');
 const {RegisterSchema, LoginSchema} = require('./auth/auth-schema');
 
 const createApp = () => {
@@ -43,7 +43,7 @@ module.exports = (Models, config) => {
 
   app.get(
     '/api/categories/:categoryId',
-    requestValidator(CategorySchema, 'params'),
+    requestValidator(CategoryParamSchema, 'params'),
     requestHandler(categoryController, 'findOne'),
   );
 

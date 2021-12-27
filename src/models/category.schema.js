@@ -6,10 +6,13 @@ module.exports = ({Schema}) => {
         required: true,
         unique: true,
       },
-      products: [
+      imageUrl: {
+        type: String,
+      },
+      foods: [
         {
           type: Schema.Types.ObjectId,
-          ref: 'Product',
+          ref: 'Food',
         },
       ],
       archivedAt: {
