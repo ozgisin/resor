@@ -8,6 +8,11 @@ const {ROLES} = require('../../../constants');
 
 describe('Integration FoodController', () => {
   let response;
+  let category;
+
+  beforeEach(async () => {
+    category = await Models.Category.create({title: 'Beverages'});
+  });
 
   describe('findOne()', () => {
     describe('when request params are invalid', () => {
@@ -15,7 +20,9 @@ describe('Integration FoodController', () => {
 
       describe.each(INVALID_PARAMS)('with value %j', (queryParam) => {
         beforeEach(async () => {
-          response = await supertest(app).get(`/api/foods/${queryParam}`);
+          response = await supertest(app).get(
+            `/api/categories/:categoryId/foods/${queryParam}`,
+          );
         });
 
         it('returns correct status with correct title', () => {
@@ -33,10 +40,8 @@ describe('Integration FoodController', () => {
     });
 
     describe('when everything is successful', () => {
-      let category;
       let food;
       beforeEach(async () => {
-        category = await Models.Category.create({title: 'Beverages'});
         food = await Models.Food.create({
           title: 'Orange Juice',
           price: 25,
@@ -44,7 +49,7 @@ describe('Integration FoodController', () => {
         });
 
         response = await supertest(app).get(
-          `/api/categories/${categories[0]._id}`,
+          `/api/categories/${category._id}/foods/${food._id}`,
         );
       });
 
@@ -52,17 +57,18 @@ describe('Integration FoodController', () => {
         expect(response).toMatchObject({
           status: status.OK,
           body: {
-            _id: categories[0]._id,
-            title: categories[0].title,
+            _id: food._id,
+            title: food.title,
+            price: 25,
           },
         });
       });
     });
 
-    describe('when category is not found', () => {
+    describe('when food is not found', () => {
       beforeEach(async () => {
         response = await supertest(app).get(
-          `/api/categories/61c8a0dab8298ed09a72a7d3`,
+          `/api/categories/${category._id}/foods/61c8a0dab8298ed09a72a7d3`,
         );
       });
 
@@ -75,36 +81,6 @@ describe('Integration FoodController', () => {
           body: {
             name: 'NotFoundError',
           },
-        });
-      });
-    });
-  });
-
-  describe('findAll()', () => {
-    describe('when everything is successful', () => {
-      let categories;
-      beforeEach(async () => {
-        categories = await Models.Category.insertMany([
-          {title: 'Starters'},
-          {title: 'Beverages'},
-        ]);
-
-        response = await supertest(app).get('/api/categories');
-      });
-
-      it('returns correct status and body', () => {
-        expect(response).toMatchObject({
-          status: status.OK,
-          body: [
-            {
-              _id: categories[0]._id,
-              title: categories[0].title,
-            },
-            {
-              _id: categories[1]._id,
-              title: categories[1].title,
-            },
-          ],
         });
       });
     });
@@ -132,10 +108,10 @@ describe('Integration FoodController', () => {
         );
 
         response = await supertest(app)
-          .post('/api/categories')
+          .post(`/api/categories/${category._id}/foods`)
           .set('Content-Type', 'application/json')
           .set('x-access-token', token)
-          .send([{title: 'Test Category'}]);
+          .send([{title: 'Test Food', price: 10}]);
       });
 
       it('returns correct status and body', () => {
@@ -143,7 +119,8 @@ describe('Integration FoodController', () => {
           status: status.CREATED,
           body: [
             {
-              title: 'Test Category',
+              title: 'Test Food',
+              price: 10,
             },
           ],
         });
@@ -171,10 +148,10 @@ describe('Integration FoodController', () => {
         );
 
         response = await supertest(app)
-          .post('/api/categories')
+          .post(`/api/categories/${category._id}/foods`)
           .set('Content-Type', 'application/json')
           .set('x-access-token', token)
-          .send([{title: 'Test Category'}]);
+          .send([{title: 'Test Food', price: 10}]);
       });
 
       it('returns correct status with correct title', () => {
@@ -193,9 +170,9 @@ describe('Integration FoodController', () => {
     describe('when request does not the x-access-token header', () => {
       beforeEach(async () => {
         response = await supertest(app)
-          .post('/api/categories')
+          .post(`/api/categories/${category._id}/foods`)
           .set('Content-Type', 'application/json')
-          .send([{title: 'Test Category'}]);
+          .send([{title: 'Test Food', price: 10}]);
       });
 
       it('returns correct status with correct title', () => {
@@ -213,7 +190,15 @@ describe('Integration FoodController', () => {
   });
 
   describe('delete()', () => {
-    let categories;
+    let food;
+
+    beforeEach(async () => {
+      food = await Models.Food.create({
+        title: 'Orange Juice',
+        price: 25,
+        categoryId: category._id,
+      });
+    });
 
     describe('when everything is successful', () => {
       beforeEach(async () => {
@@ -235,13 +220,8 @@ describe('Integration FoodController', () => {
           },
         );
 
-        categories = await Models.Category.insertMany([
-          {title: 'Soups'},
-          {title: 'Pizzas'},
-        ]);
-
         response = await supertest(app)
-          .delete(`/api/categories/${categories[0]._id}`)
+          .delete(`/api/categories/${category._id}/foods/${food._id}`)
           .set('x-access-token', token);
       });
 
@@ -272,13 +252,8 @@ describe('Integration FoodController', () => {
           },
         );
 
-        categories = await Models.Category.insertMany([
-          {title: 'Starters'},
-          {title: 'Beverages'},
-        ]);
-
         response = await supertest(app)
-          .delete(`/api/categories/${categories[0]._id}`)
+          .delete(`/api/categories/${category._id}/foods/${food._id}`)
           .set('x-access-token', token);
       });
 
@@ -297,12 +272,8 @@ describe('Integration FoodController', () => {
 
     describe('when request does not the x-access-token header', () => {
       beforeEach(async () => {
-        categories = await Models.Category.insertMany([
-          {title: 'Starters'},
-          {title: 'Beverages'},
-        ]);
         response = await supertest(app).delete(
-          `/api/categories/${categories[0]._id}`,
+          `/api/categories/${category._id}/foods/${food._id}`,
         );
       });
 

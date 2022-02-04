@@ -18,8 +18,8 @@ const {
 } = require('./category-controller/category-schema');
 const {RegisterSchema, LoginSchema} = require('./auth/auth-schema');
 const {
-  FoodFindParamSchema,
   FoodParamSchema,
+  FoodFindParamSchema,
   FoodCreateSchema,
 } = require('./food-controller/food-schema');
 
@@ -73,11 +73,6 @@ module.exports = (Models, config) => {
     '/api/categories/:categoryId/foods/:foodId',
     requestValidator(FoodParamSchema, 'params'),
     requestHandler(foodController, 'findOne'),
-  );
-  app.get(
-    '/api/categories/:categoryId/foods',
-    requestValidator(FoodFindParamSchema, 'params'),
-    requestHandler(foodController, 'find'),
   );
   app.post(
     '/api/categories/:categoryId/foods',
