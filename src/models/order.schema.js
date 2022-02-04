@@ -35,6 +35,7 @@ module.exports = ({Schema}) => {
       ],
       totalPrice: {
         type: Number,
+        required: true,
       },
     },
     {

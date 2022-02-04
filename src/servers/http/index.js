@@ -12,6 +12,7 @@ const {
 const AuthController = require('./auth');
 const CategoryController = require('./category-controller');
 const FoodController = require('./food-controller');
+const OrderController = require('./order-controller');
 const {
   CategoryParamSchema,
   CategoryCreateSchema,
@@ -22,6 +23,11 @@ const {
   FoodFindParamSchema,
   FoodCreateSchema,
 } = require('./food-controller/food-schema');
+const {
+  OrderParamSchema,
+  OrderFindParamSchema,
+  OrderCreateSchema,
+} = require('./order-controller/order-schema');
 
 const createApp = () => {
   const app = express();
@@ -86,6 +92,27 @@ module.exports = (Models, config) => {
     authorize(ROLES.ADMIN),
     requestValidator(FoodParamSchema, 'params'),
     requestHandler(foodController, 'delete'),
+  );
+
+  const orderController = new OrderController(Models);
+  app.get(
+    '/api/orders/:orderId',
+    authorize([ROLES.ADMIN, ROLES.USER]),
+    requestValidator(OrderFindParamSchema, 'params'),
+    requestHandler(orderController, 'findOne'),
+  );
+  app.get(
+    '/api/users/:userId/orders',
+    authorize([ROLES.ADMIN, ROLES.USER]),
+    requestValidator(OrderParamSchema, 'params'),
+    requestHandler(orderController, 'find'),
+  );
+  app.post(
+    '/api/users/:userId/orders',
+    authorize([ROLES.ADMIN, ROLES.USER]),
+    requestValidator(OrderParamSchema, 'params'),
+    requestValidator(OrderCreateSchema, 'body'),
+    requestHandler(orderController, 'create'),
   );
 
   app.use(errorHandler);

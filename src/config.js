@@ -9,6 +9,11 @@ function dbConnectionString(env) {
   if (env === 'test') {
     return 'mongodb://localhost:27017/integration_tests';
   }
+
+  if (env === 'production') {
+    return 'mongodb+srv://dbAdmin:5obhVbZHTdqVEVdQ@cluster0.wzsqq.mongodb.net/resor?retryWrites=true&w=majority';
+  }
+
   return 'mongodb://localhost:27017/resor';
 }
 
