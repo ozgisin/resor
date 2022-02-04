@@ -115,58 +115,6 @@ describe('FoodController', () => {
     });
   });
 
-  describe('find', () => {
-    let foodController;
-    let req;
-
-    afterEach(() => {
-      mockResponse.json.mockClear();
-    });
-
-    describe('when everything is successful', () => {
-      let food;
-
-      beforeEach(async () => {
-        req = {params: {categoryId: 'test-category-id'}};
-        food = {
-          _id: 'test-food-id',
-          cateogryId: 'test-category-id',
-          title: 'Test Category',
-        };
-        Food = {find: jest.fn().mockResolvedValue([food])};
-        foodController = new FoodController({Food});
-
-        await foodController.find(req, res);
-      });
-
-      it('calls Food.find with correct params', () => {
-        expect(foodController.Food.find).toHaveBeenCalledWith({
-          categoryId: req.params.categoryId,
-        });
-      });
-
-      it('retuns correct response', () => {
-        expect(res.status).toHaveBeenCalledWith(status.OK);
-        expect(mockResponse.json).toHaveBeenCalledWith([food]);
-      });
-    });
-
-    describe('when Food.find fails', () => {
-      let error;
-
-      beforeEach(() => {
-        error = new Error('Test Error');
-        req = {params: {categoryId: 'test-category-id'}};
-        Food = {find: jest.fn().mockRejectedValue(error)};
-        foodController = new FoodController({Food});
-      });
-
-      it('rejects', async () => {
-        await expect(foodController.find(req, res)).rejects.toThrow(error);
-      });
-    });
-  });
-
   describe('create', () => {
     let foodController;
     let req;

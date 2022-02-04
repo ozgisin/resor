@@ -21,14 +21,6 @@ class FoodController {
     res.status(status.OK).json(food);
   }
 
-  async find(req, res) {
-    const {
-      params: {categoryId},
-    } = req;
-    const foods = await this.Food.find({categoryId});
-    res.status(status.OK).json(foods);
-  }
-
   async create(req, res) {
     const {
       params: {categoryId},
