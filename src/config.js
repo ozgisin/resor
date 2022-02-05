@@ -11,19 +11,19 @@ function dbConnectionString(env) {
   }
 
   if (env === 'production') {
-    return 'mongodb+srv://dbAdmin:5obhVbZHTdqVEVdQ@cluster0.wzsqq.mongodb.net/resor?retryWrites=true&w=majority';
+    return `mongodb+srv://dbAdmin:${process.env.DB_PASSWORD}@cluster0.wzsqq.mongodb.net/resor?retryWrites=true&w=majority`;
   }
 
   return 'mongodb://localhost:27017/resor';
 }
 
 const config = {
-  httPort: 3000,
+  httPort: process.env.PORT || 3000,
   mongo: {
     uri: dbConnectionString(process.env.NODE_ENV),
   },
   token: {
-    secret: 'resor-app',
+    secret: process.env.JWT_SECRET || 'resor-app',
     expiration: '2h',
   },
 };
