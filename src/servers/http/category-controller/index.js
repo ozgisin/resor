@@ -15,7 +15,6 @@ class CategoryController {
     const category = await this.Category.findById(categoryId).populate({
       path: 'foods',
       model: this.Food,
-      select: '_id title imageUrl price',
     });
 
     if (!category) {

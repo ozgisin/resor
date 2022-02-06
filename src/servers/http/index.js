@@ -1,6 +1,9 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger.json');
+
 const {ROLES} = require('../../constants');
 
 const {
@@ -32,6 +35,7 @@ const {
 const createApp = () => {
   const app = express();
   app.use(express.json());
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
   return app;
 };
 

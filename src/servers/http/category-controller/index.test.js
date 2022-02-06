@@ -79,7 +79,6 @@ describe('CategoryController', () => {
         expect(mockResult.populate).toHaveBeenCalledWith({
           path: 'foods',
           model: Food,
-          select: '_id title imageUrl price',
         });
       });
 
