@@ -21,6 +21,7 @@ const OrderCreateSchema = Joi.array()
       .keys({
         foodId: Joi.objectId().required(),
         quantity: Joi.number().positive().min(1).max(20).required(),
+        tableNo: Joi.number().positive().min(1).max(100).optional(),
       })
       .required(),
   )

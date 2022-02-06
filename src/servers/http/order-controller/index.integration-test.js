@@ -120,7 +120,7 @@ describe('Integration OrderController', () => {
     });
   });
 
-  describe('find()', () => {
+  describe.only('find()', () => {
     describe('when request params are invalid', () => {
       const INVALID_PARAMS = ['1234', 'test'];
 

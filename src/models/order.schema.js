@@ -37,6 +37,10 @@ module.exports = ({Schema}) => {
         type: Number,
         required: true,
       },
+      tableNo: {
+        type: Number,
+        required: false,
+      },
     },
     {
       timestamps: true,

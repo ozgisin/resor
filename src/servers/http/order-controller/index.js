@@ -1,5 +1,6 @@
 const status = require('http-status');
 const {NotFoundError} = require('../errors');
+const {ROLES} = require('../../../constants');
 
 class OrderController {
   constructor({User, Food, Order}) {
@@ -16,7 +17,6 @@ class OrderController {
     const order = await this.Order.findById(orderId).populate({
       path: 'items.food',
       model: this.Food,
-      select: '_id title imageUrl price',
     });
 
     if (!order) {
@@ -29,12 +29,13 @@ class OrderController {
   async find(req, res) {
     const {
       params: {userId},
+      user: {role},
     } = req;
+    const whereClause = role === ROLES.ADMIN ? {} : {userId};
 
-    const orders = await this.Order.find({userId}).populate({
+    const orders = await this.Order.find(whereClause).populate({
       path: 'items.food',
       model: this.Food,
-      select: '_id title imageUrl price',
     });
 
     res.status(status.OK).json(orders);
@@ -63,7 +64,12 @@ class OrderController {
       totalPrice += result.price * item.quantity;
     }
 
-    const order = await this.Order.create({userId, items, totalPrice});
+    const order = await this.Order.create({
+      userId,
+      items,
+      totalPrice,
+      tableNo: body.tableNo || null,
+    });
     res.status(status.CREATED).json(order);
   }
 }
