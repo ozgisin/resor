@@ -127,6 +127,7 @@ describe('AuthenticationController', () => {
       it('retuns correct response', () => {
         expect(res.status).toHaveBeenCalledWith(status.CREATED);
         expect(mockResponse.json).toHaveBeenCalledWith({
+          id: user._id,
           firstName: user.firstName,
           lastName: user.lastName,
           email: user.email,
@@ -419,6 +420,7 @@ describe('AuthenticationController', () => {
       it('retuns correct response', () => {
         expect(res.status).toHaveBeenCalledWith(status.OK);
         expect(mockResponse.json).toHaveBeenCalledWith({
+          id: user._id,
           firstName: user.firstName,
           lastName: user.lastName,
           email: user.email,

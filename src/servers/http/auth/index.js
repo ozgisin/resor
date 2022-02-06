@@ -44,6 +44,7 @@ class AuthenticationController {
     user.token = token;
 
     return res.status(status.CREATED).json({
+      id: user._id,
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
@@ -74,6 +75,7 @@ class AuthenticationController {
       user.token = token;
 
       return res.status(status.OK).json({
+        id: user._id,
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
