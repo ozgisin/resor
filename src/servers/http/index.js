@@ -105,6 +105,12 @@ module.exports = (Models, config) => {
     requestValidator(OrderFindParamSchema, 'params'),
     requestHandler(orderController, 'findOne'),
   );
+  app.delete(
+    '/api/orders/:orderId',
+    authorize(ROLES.ADMIN),
+    requestValidator(OrderFindParamSchema, 'params'),
+    requestHandler(orderController, 'delete'),
+  );
   app.get(
     '/api/users/:userId/orders',
     authorize([ROLES.ADMIN, ROLES.USER]),

@@ -18,7 +18,7 @@ describe('Integration OrderController', () => {
       lastName: 'Özgiray',
       email: 'krm@test.com',
       password: 'password',
-      role: ROLES.USER,
+      role: ROLES.ADMIN,
     });
     token = jwt.sign(
       {
@@ -120,7 +120,7 @@ describe('Integration OrderController', () => {
     });
   });
 
-  describe.only('find()', () => {
+  describe('find()', () => {
     describe('when request params are invalid', () => {
       const INVALID_PARAMS = ['1234', 'test'];
 
@@ -218,6 +218,115 @@ describe('Integration OrderController', () => {
           .post(`/api/users/${user._id}/orders`)
           .set('Content-Type', 'application/json')
           .send({tableNo: 4, items: [{foodId: foods[0]._id, quantity: 2}]});
+      });
+
+      it('returns correct status with correct title', () => {
+        expect(response).toMatchObject({
+          headers: {
+            'content-type': 'application/problem+json; charset=utf-8',
+          },
+          status: status.FORBIDDEN,
+          body: {
+            name: 'AuthorizationError',
+          },
+        });
+      });
+    });
+  });
+
+  describe('delete()', () => {
+    describe('when everything is successful', () => {
+      let order;
+
+      beforeEach(async () => {
+        order = await Models.Order.create({
+          userId: user._id,
+          items: [
+            {
+              food: foods[0]._id,
+              quantity: 1,
+            },
+          ],
+          totalPrice: 10,
+        });
+
+        response = await supertest(app)
+          .delete(`/api/orders/${order._id}`)
+          .set('x-access-token', token);
+      });
+
+      it('returns correct status', () => {
+        expect(response).toMatchObject({
+          status: status.NO_CONTENT,
+        });
+      });
+    });
+
+    describe('when request does not the x-access-token header', () => {
+      let order;
+
+      beforeEach(async () => {
+        order = await Models.Order.create({
+          userId: user._id,
+          items: [
+            {
+              food: foods[0]._id,
+              quantity: 1,
+            },
+          ],
+          totalPrice: 10,
+        });
+
+        response = await supertest(app).delete(`/api/orders/${order._id}`);
+      });
+
+      it('returns correct status with correct title', () => {
+        expect(response).toMatchObject({
+          headers: {
+            'content-type': 'application/problem+json; charset=utf-8',
+          },
+          status: status.FORBIDDEN,
+          body: {
+            name: 'AuthorizationError',
+          },
+        });
+      });
+    });
+
+    describe('when user is not an admin', () => {
+      beforeEach(async () => {
+        user = await Models.User.create({
+          firstName: 'Sinan',
+          lastName: 'Özgiray',
+          email: 'snn@test.com',
+          password: 'password',
+          role: ROLES.USER,
+        });
+        token = jwt.sign(
+          {
+            role: user.role,
+          },
+          config.token.secret,
+          {
+            subject: user._id.toString(),
+            expiresIn: config.token.expiration,
+          },
+        );
+
+        const order = await Models.Order.create({
+          userId: user._id,
+          items: [
+            {
+              food: foods[0]._id,
+              quantity: 1,
+            },
+          ],
+          totalPrice: 10,
+        });
+
+        response = await supertest(app)
+          .delete(`/api/orders/${order._id}`)
+          .set('x-access-token', token);
       });
 
       it('returns correct status with correct title', () => {

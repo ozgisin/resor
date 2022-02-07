@@ -44,33 +44,42 @@ class OrderController {
   async create(req, res) {
     const {
       params: {userId},
-      body,
+      body: {items, tableNo},
     } = req;
     const user = await this.User.findById(userId);
     if (!user) {
       throw new NotFoundError();
     }
 
-    const foodIds = body.map((item) => item.foodId);
+    const foodIds = items.map((item) => item.foodId);
     const foods = await this.Food.find({
       _id: {$in: foodIds},
     });
 
-    const items = [];
+    const lineItems = [];
     let totalPrice = 0;
-    for (const item of body) {
-      items.push({food: item.foodId, quantity: item.quantity});
+    for (const item of items) {
+      lineItems.push({food: item.foodId, quantity: item.quantity});
       const result = foods.find((food) => food._id.toString() === item.foodId);
       totalPrice += result.price * item.quantity;
     }
 
     const order = await this.Order.create({
       userId,
-      items,
+      items: lineItems,
       totalPrice,
-      tableNo: body.tableNo || null,
+      tableNo: tableNo || null,
     });
     res.status(status.CREATED).json(order);
+  }
+
+  async delete(req, res) {
+    const {
+      params: {orderId},
+    } = req;
+
+    await this.Order.deleteOne({_id: orderId});
+    res.status(status.NO_CONTENT).json();
   }
 }
 
