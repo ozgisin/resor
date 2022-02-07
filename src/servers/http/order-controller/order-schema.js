@@ -15,16 +15,18 @@ const OrderFindParamSchema = Joi.object()
   .label('parameters')
   .required();
 
-const OrderCreateSchema = Joi.array()
-  .items(
-    Joi.object()
-      .keys({
-        foodId: Joi.objectId().required(),
-        quantity: Joi.number().positive().min(1).max(20).required(),
-        tableNo: Joi.number().positive().min(1).max(100).optional(),
-      })
-      .required(),
-  )
+const OrderCreateSchema = Joi.object()
+  .keys({
+    tableNo: Joi.number().positive().min(1).max(100).optional(),
+    items: Joi.array().items(
+      Joi.object()
+        .keys({
+          foodId: Joi.objectId().required(),
+          quantity: Joi.number().positive().min(1).max(20).required(),
+        })
+        .required(),
+    ),
+  })
   .label('payload')
   .required();
 
