@@ -44,7 +44,7 @@ class OrderController {
   async create(req, res) {
     const {
       params: {userId},
-      body: {items, tableNo},
+      body: {items, tableNo, note},
     } = req;
     const user = await this.User.findById(userId);
     if (!user) {
@@ -69,7 +69,9 @@ class OrderController {
       items: lineItems,
       totalPrice,
       tableNo: tableNo || null,
+      note: note || null,
     });
+
     res.status(status.CREATED).json(order);
   }
 

@@ -41,6 +41,9 @@ module.exports = ({Schema}) => {
         type: Number,
         required: false,
       },
+      note: {
+        type: String,
+      },
     },
     {
       timestamps: true,

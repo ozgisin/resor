@@ -192,7 +192,11 @@ describe('Integration OrderController', () => {
           .post(`/api/users/${user._id}/orders`)
           .set('Content-Type', 'application/json')
           .set('x-access-token', token)
-          .send({tableNo: 4, items: [{foodId: foods[0]._id, quantity: 2}]});
+          .send({
+            tableNo: 4,
+            note: 'no pickles please',
+            items: [{foodId: foods[0]._id, quantity: 2}],
+          });
       });
 
       it('returns correct status and body', () => {
@@ -207,6 +211,7 @@ describe('Integration OrderController', () => {
             ],
             totalPrice: 20,
             tableNo: 4,
+            note: 'no pickles please',
           },
         });
       });
