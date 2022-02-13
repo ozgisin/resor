@@ -8,11 +8,13 @@ module.exports = (mongoose) => {
   const Category = mongoose.model('Category', categorySchema, 'categories');
   const Food = mongoose.model('Food', foodSchema, 'foods');
   const Order = mongoose.model('Order', orderSchema, 'orders');
+  const Voucher = mongoose.model('Voucher', orderSchema, 'vouchers');
 
   return {
     User,
     Category,
     Food,
     Order,
+    Voucher,
   };
 };

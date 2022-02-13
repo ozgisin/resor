@@ -44,6 +44,11 @@ module.exports = ({Schema}) => {
       note: {
         type: String,
       },
+      voucherId: {
+        type: Schema.Types.ObjectId,
+        ref: 'Voucher',
+        required: false,
+      },
     },
     {
       timestamps: true,
