@@ -44,7 +44,7 @@ module.exports = ({Schema}) => {
       note: {
         type: String,
       },
-      voucherId: {
+      voucher: {
         type: Schema.Types.ObjectId,
         ref: 'Voucher',
         required: false,

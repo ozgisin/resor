@@ -3,10 +3,11 @@ const {NotFoundError} = require('../errors');
 const {ROLES} = require('../../../constants');
 
 class OrderController {
-  constructor({User, Food, Order}) {
+  constructor({User, Food, Order, Voucher}) {
     this.User = User;
     this.Food = Food;
     this.Order = Order;
+    this.Voucher = Voucher;
   }
 
   async findOne(req, res) {
@@ -14,10 +15,12 @@ class OrderController {
       params: {orderId},
     } = req;
 
-    const order = await this.Order.findById(orderId).populate({
-      path: 'items.food',
-      model: this.Food,
-    });
+    const order = await this.Order.findById(orderId)
+      .populate({
+        path: 'items.food',
+        model: this.Food,
+      })
+      .populate({path: 'voucher', model: this.Voucher});
 
     if (!order) {
       throw new NotFoundError();
@@ -33,10 +36,12 @@ class OrderController {
     } = req;
     const whereClause = role === ROLES.ADMIN ? {} : {userId};
 
-    const orders = await this.Order.find(whereClause).populate({
-      path: 'items.food',
-      model: this.Food,
-    });
+    const orders = await this.Order.find(whereClause)
+      .populate({
+        path: 'items.food',
+        model: this.Food,
+      })
+      .populate({path: 'voucher', model: this.Voucher});
 
     res.status(status.OK).json(orders);
   }
@@ -44,12 +49,14 @@ class OrderController {
   async create(req, res) {
     const {
       params: {userId},
-      body: {items, tableNo, note},
+      body: {items, tableNo, note, voucher},
     } = req;
     const user = await this.User.findById(userId);
     if (!user) {
       throw new NotFoundError();
     }
+
+    let voucherCode;
 
     const foodIds = items.map((item) => item.foodId);
     const foods = await this.Food.find({
@@ -64,12 +71,27 @@ class OrderController {
       totalPrice += result.price * item.quantity;
     }
 
+    if (voucher) {
+      voucherCode = await this.Voucher.findOne({
+        code: voucher,
+      });
+
+      if (!voucherCode) {
+        throw new NotFoundError('Invalid Voucher !');
+      }
+
+      totalPrice -= totalPrice * (voucherCode.discount / 100);
+
+      console.log('totalPrice->', totalPrice);
+    }
+
     const order = await this.Order.create({
       userId,
       items: lineItems,
       totalPrice,
       tableNo: tableNo || null,
       note: note || null,
+      voucher: voucher ? voucherCode._id : null,
     });
 
     res.status(status.CREATED).json(order);

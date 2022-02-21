@@ -10,6 +10,7 @@ describe('Integration OrderController', () => {
   let response;
   let foods;
   let user;
+  let voucher;
   let token;
 
   beforeEach(async () => {
@@ -19,6 +20,10 @@ describe('Integration OrderController', () => {
       email: 'krm@test.com',
       password: 'password',
       role: ROLES.ADMIN,
+    });
+    voucher = await Models.Voucher.create({
+      code: 'QALCLUQG',
+      discount: 50,
     });
     token = jwt.sign(
       {
@@ -75,6 +80,7 @@ describe('Integration OrderController', () => {
             },
           ],
           totalPrice: 10,
+          voucher: voucher._id,
         });
 
         response = await supertest(app)
@@ -195,6 +201,7 @@ describe('Integration OrderController', () => {
           .send({
             tableNo: 4,
             note: 'no pickles please',
+            voucher: 'QALCLUQG',
             items: [{foodId: foods[0]._id, quantity: 2}],
           });
       });
@@ -209,7 +216,7 @@ describe('Integration OrderController', () => {
                 quantity: 2,
               },
             ],
-            totalPrice: 20,
+            totalPrice: 10,
             tableNo: 4,
             note: 'no pickles please',
           },
@@ -242,7 +249,6 @@ describe('Integration OrderController', () => {
   describe('delete()', () => {
     describe('when everything is successful', () => {
       let order;
-
       beforeEach(async () => {
         order = await Models.Order.create({
           userId: user._id,

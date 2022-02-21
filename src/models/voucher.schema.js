@@ -15,6 +15,7 @@ module.exports = ({Schema}) => {
         uppercase: true,
         trim: true,
         unique: true,
+        index: true,
       },
       discount: {
         type: Number,

@@ -16,6 +16,7 @@ const AuthController = require('./auth');
 const CategoryController = require('./category-controller');
 const FoodController = require('./food-controller');
 const OrderController = require('./order-controller');
+const VoucherController = require('./voucher-controller');
 const {
   CategoryParamSchema,
   CategoryCreateSchema,
@@ -31,6 +32,7 @@ const {
   OrderFindParamSchema,
   OrderCreateSchema,
 } = require('./order-controller/order-schema');
+const {VoucherCreateSchema} = require('./voucher-controller/voucher-schema');
 
 const createApp = () => {
   const app = express();
@@ -123,6 +125,19 @@ module.exports = (Models, config) => {
     requestValidator(OrderParamSchema, 'params'),
     requestValidator(OrderCreateSchema, 'body'),
     requestHandler(orderController, 'create'),
+  );
+
+  const voucherController = new VoucherController(Models);
+  app.get(
+    '/api/vouchers',
+    authorize(ROLES.ADMIN),
+    requestHandler(voucherController, 'findAll'),
+  );
+  app.post(
+    '/api/vouchers',
+    authorize(ROLES.ADMIN),
+    requestValidator(VoucherCreateSchema, 'body'),
+    requestHandler(voucherController, 'create'),
   );
 
   app.use(errorHandler);

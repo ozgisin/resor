@@ -18,6 +18,7 @@ const OrderFindParamSchema = Joi.object()
 const OrderCreateSchema = Joi.object()
   .keys({
     tableNo: Joi.number().positive().min(1).max(100).optional(),
+    voucher: Joi.string().min(8).max(8).optional(),
     note: Joi.string().optional(),
     items: Joi.array().items(
       Joi.object()
