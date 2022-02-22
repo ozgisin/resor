@@ -74,6 +74,8 @@ class AuthenticationController {
 
       user.token = token;
 
+      await user.save();
+
       return res.status(status.OK).json({
         id: user._id,
         firstName: user.firstName,

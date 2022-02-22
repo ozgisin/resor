@@ -367,6 +367,7 @@ describe('AuthenticationController', () => {
           role: ROLES.USER,
           createdAt: new Date(1000),
           updatedAt: new Date(1000),
+          save: jest.fn(),
         };
         req = {
           body: {

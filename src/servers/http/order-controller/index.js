@@ -1,4 +1,4 @@
-const status = require('http-status');
+const httpStatus = require('http-status');
 const {NotFoundError} = require('../errors');
 const {ROLES} = require('../../../constants');
 
@@ -26,7 +26,7 @@ class OrderController {
       throw new NotFoundError();
     }
 
-    res.status(status.OK).json(order);
+    res.status(httpStatus.OK).json(order);
   }
 
   async find(req, res) {
@@ -43,7 +43,7 @@ class OrderController {
       })
       .populate({path: 'voucher', model: this.Voucher});
 
-    res.status(status.OK).json(orders);
+    res.status(httpStatus.OK).json(orders);
   }
 
   async create(req, res) {
@@ -81,8 +81,6 @@ class OrderController {
       }
 
       totalPrice -= totalPrice * (voucherCode.discount / 100);
-
-      console.log('totalPrice->', totalPrice);
     }
 
     const order = await this.Order.create({
@@ -94,7 +92,7 @@ class OrderController {
       voucher: voucher ? voucherCode._id : null,
     });
 
-    res.status(status.CREATED).json(order);
+    res.status(httpStatus.CREATED).json(order);
   }
 
   async delete(req, res) {
@@ -103,7 +101,27 @@ class OrderController {
     } = req;
 
     await this.Order.deleteOne({_id: orderId});
-    res.status(status.NO_CONTENT).json();
+    res.status(httpStatus.NO_CONTENT).json();
+  }
+
+  async update(req, res) {
+    const {
+      params: {orderId},
+      body: {status},
+    } = req;
+
+    const order = await this.Order.findById(orderId);
+
+    if (!order) {
+      throw new NotFoundError();
+    }
+
+    console.log('status->', status);
+
+    order.status = status;
+    await order.save();
+
+    res.status(httpStatus.OK).json(order);
   }
 }
 

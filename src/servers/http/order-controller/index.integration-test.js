@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const {Models, config, db} = require('../../..');
 require('../../../test-setup')(db);
 const app = require('..')(Models, config);
-const {ROLES} = require('../../../constants');
+const {ROLES, ORDER_STATUS} = require('../../../constants');
 
 describe('Integration OrderController', () => {
   let response;
@@ -338,6 +338,129 @@ describe('Integration OrderController', () => {
         response = await supertest(app)
           .delete(`/api/orders/${order._id}`)
           .set('x-access-token', token);
+      });
+
+      it('returns correct status with correct title', () => {
+        expect(response).toMatchObject({
+          headers: {
+            'content-type': 'application/problem+json; charset=utf-8',
+          },
+          status: status.FORBIDDEN,
+          body: {
+            name: 'AuthorizationError',
+          },
+        });
+      });
+    });
+  });
+
+  describe('update()', () => {
+    describe('when everything is successful', () => {
+      let order;
+      beforeEach(async () => {
+        order = await Models.Order.create({
+          userId: user._id,
+          items: [
+            {
+              food: foods[0]._id,
+              quantity: 1,
+            },
+          ],
+          totalPrice: 10,
+        });
+
+        response = await supertest(app)
+          .patch(`/api/orders/${order._id}`)
+          .set('x-access-token', token)
+          .send({status: ORDER_STATUS.CANCELED});
+      });
+
+      it('returns correct status and body', () => {
+        expect(response).toMatchObject({
+          status: status.OK,
+          body: {
+            items: [
+              {
+                food: foods[0]._id,
+                quantity: 1,
+              },
+            ],
+            userId: user._id,
+            totalPrice: 10,
+            status: ORDER_STATUS.CANCELED,
+          },
+        });
+      });
+    });
+
+    describe('when request does not the x-access-token header', () => {
+      let order;
+
+      beforeEach(async () => {
+        order = await Models.Order.create({
+          userId: user._id,
+          items: [
+            {
+              food: foods[0]._id,
+              quantity: 1,
+            },
+          ],
+          totalPrice: 10,
+        });
+
+        response = await supertest(app)
+          .patch(`/api/orders/${order._id}`)
+          .send({status: ORDER_STATUS.CANCELED});
+      });
+
+      it('returns correct status with correct title', () => {
+        expect(response).toMatchObject({
+          headers: {
+            'content-type': 'application/problem+json; charset=utf-8',
+          },
+          status: status.FORBIDDEN,
+          body: {
+            name: 'AuthorizationError',
+          },
+        });
+      });
+    });
+
+    describe('when user is not an admin', () => {
+      beforeEach(async () => {
+        user = await Models.User.create({
+          firstName: 'Sinan',
+          lastName: 'Özgiray',
+          email: 'snn@test.com',
+          password: 'password',
+          role: ROLES.USER,
+        });
+        token = jwt.sign(
+          {
+            role: user.role,
+          },
+          config.token.secret,
+          {
+            subject: user._id.toString(),
+            expiresIn: config.token.expiration,
+          },
+        );
+
+        const order = await Models.Order.create({
+          userId: user._id,
+          items: [
+            {
+              food: foods[0]._id,
+              quantity: 1,
+            },
+          ],
+          totalPrice: 10,
+        });
+
+        response = await supertest(app)
+          .patch(`/api/orders/${order._id}`)
+          .set('x-access-token', token)
+          .send({status: ORDER_STATUS.CANCELED});
       });
 
       it('returns correct status with correct title', () => {

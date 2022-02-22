@@ -7,6 +7,14 @@ const VoucherCreateSchema = Joi.object()
   .label('payload')
   .required();
 
+const VoucherFindSchema = Joi.object()
+  .keys({
+    code: Joi.string().min(8).max(8).required(),
+  })
+  .label('parameters')
+  .required();
+
 module.exports = {
   VoucherCreateSchema,
+  VoucherFindSchema,
 };

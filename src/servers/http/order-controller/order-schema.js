@@ -1,5 +1,6 @@
 const Joi = require('joi');
 Joi.objectId = require('joi-objectid')(Joi);
+const {ORDER_STATUS} = require('../../../constants');
 
 const OrderParamSchema = Joi.object()
   .keys({
@@ -13,6 +14,15 @@ const OrderFindParamSchema = Joi.object()
     orderId: Joi.objectId().required(),
   })
   .label('parameters')
+  .required();
+
+const OrderUpdateSchema = Joi.object()
+  .keys({
+    status: Joi.string()
+      .valid(...Object.values(ORDER_STATUS))
+      .required(),
+  })
+  .label('payload')
   .required();
 
 const OrderCreateSchema = Joi.object()
@@ -36,4 +46,5 @@ module.exports = {
   OrderParamSchema,
   OrderFindParamSchema,
   OrderCreateSchema,
+  OrderUpdateSchema,
 };

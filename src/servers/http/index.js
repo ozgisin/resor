@@ -31,8 +31,12 @@ const {
   OrderParamSchema,
   OrderFindParamSchema,
   OrderCreateSchema,
+  OrderUpdateSchema,
 } = require('./order-controller/order-schema');
-const {VoucherCreateSchema} = require('./voucher-controller/voucher-schema');
+const {
+  VoucherCreateSchema,
+  VoucherFindSchema,
+} = require('./voucher-controller/voucher-schema');
 
 const createApp = () => {
   const app = express();
@@ -126,12 +130,25 @@ module.exports = (Models, config) => {
     requestValidator(OrderCreateSchema, 'body'),
     requestHandler(orderController, 'create'),
   );
+  app.patch(
+    '/api/orders/:orderId',
+    authorize([ROLES.ADMIN]),
+    requestValidator(OrderFindParamSchema, 'params'),
+    requestValidator(OrderUpdateSchema, 'body'),
+    requestHandler(orderController, 'update'),
+  );
 
   const voucherController = new VoucherController(Models);
   app.get(
     '/api/vouchers',
     authorize(ROLES.ADMIN),
     requestHandler(voucherController, 'findAll'),
+  );
+  app.get(
+    '/api/vouchers/:code',
+    authorize([ROLES.ADMIN, ROLES.USER]),
+    requestValidator(VoucherFindSchema, 'params'),
+    requestHandler(voucherController, 'findOne'),
   );
   app.post(
     '/api/vouchers',
